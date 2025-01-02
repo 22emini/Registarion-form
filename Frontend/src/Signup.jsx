@@ -1,6 +1,7 @@
 // Import React and necessary hooks
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function RegistrationForm() {
   const [values, setValues] = useState({
@@ -8,6 +9,9 @@ function RegistrationForm() {
     email: "",
     password: "",
   });
+
+  // Initialize the navigate function from useNavigate
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -18,12 +22,16 @@ function RegistrationForm() {
     e.preventDefault();
     axios
       .post("http://localhost:8081/signup", values)
-      .then((res) => console.log("Registered Successfully!"))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        console.log("Registered Successfully!");
+        // Navigate to the success page after successful registration
+        navigate("/success");
+      })
+      .catch((err) => console.error("Error during registration:", err));
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-600 to-purple-600">
       <form
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
         onSubmit={handleSubmit}
