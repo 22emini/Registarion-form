@@ -17,11 +17,14 @@ const db = mysql.createConnection({
 });
 
 app.post('/signup', (req, res) => {
-  const sql = "INSERT INTO login (`name`, `email`, `password`) VALUES (?)";
+  const sql = "INSERT INTO login (`name`, `email`, `password`,`department` , `bithdate`) VALUES (?)";
   const values = [
     req.body.name,  // Adjusted to match frontend field
     req.body.email,
     req.body.password,
+    req.body.department,
+    req.body.birthdate,
+      // Added department field to the database table
   ];
 
   db.query(sql, [values], (err, data) => {
