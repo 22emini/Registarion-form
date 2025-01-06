@@ -8,23 +8,33 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database connection
+// Database connection configuration
 const db = mysql.createConnection({
-  host: 'localhost',
+  host: 'mysql.railway.internal', // Railway's internal host
   user: 'root',
-  password: '',
-  database: 'signup',
+  password: '', // Replace with your actual password
+  database: 'railway',
+  port: 3306, // Default MySQL port
 });
 
+// Connect to the database
+db.connect((err) => {
+  if (err) {
+    console.error('Database connection error:', err.message);
+    return;
+  }
+  console.log('Connected to the Railway database.');
+});
+
+// Signup endpoint
 app.post('/signup', (req, res) => {
-  const sql = "INSERT INTO login (`name`, `email`, `password`,`department` , `bithdate`) VALUES (?)";
+  const sql = "INSERT INTO login (`name`, `email`, `password`, `department`, `birthdate`) VALUES (?)";
   const values = [
-    req.body.name,  // Adjusted to match frontend field
+    req.body.name,       // Ensure frontend sends this field
     req.body.email,
     req.body.password,
-    req.body.department,
-    req.body.birthdate,
-      // Added department field to the database table
+    req.body.department, // Ensure frontend sends this field
+    req.body.birthdate,  // Ensure frontend sends this field
   ];
 
   db.query(sql, [values], (err, data) => {
@@ -36,22 +46,13 @@ app.post('/signup', (req, res) => {
   });
 });
 
-// Check database connection
-db.connect((err) => {
-  if (err) {
-    console.error('Database connection error:', err.message);
-    return;
-  }
-  console.log('Connected to the database.');
-});
-
-// Define a route for testing
+// Root endpoint for testing
 app.get('/', (req, res) => {
   res.send('API is working!');
 });
 
-// Use a valid port number and handle errors
-const PORT = 8081;
+// Start the server
+const PORT = process.env.PORT || 8081; // Use Railway's dynamic port or fallback to 8081
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });

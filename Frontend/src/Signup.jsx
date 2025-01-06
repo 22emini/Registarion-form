@@ -1,4 +1,3 @@
-// Import React and necessary hooks
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,28 +8,34 @@ function RegistrationForm() {
     email: "",
     password: "",
     department: "",
-  birthdate: "",
-
+    birthdate: "",
   });
 
-  // Initialize the navigate function from useNavigate
   const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setValues((prevValues) => ({ ...prevValues, [name]: value }));
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     axios
       .post("http://localhost:8081/signup", values)
-      .then((res) => {
-        console.log("Registered Successfully!");
-        // Navigate to the success page after successful registration
+      .then((response) => {
+        console.log(response.data.message || "Registered Successfully!");
+        // Navigate to a success page or show a success message
         navigate("/success");
       })
-      .catch((err) => console.error("Error during registration:", err));
+      .catch((error) => {
+        console.error(
+          error.response?.data?.error || "Error during registration"
+        );
+      });
   };
 
   return (
@@ -78,7 +83,7 @@ function RegistrationForm() {
         </div>
 
         {/* Password Field */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label htmlFor="password" className="block text-gray-600 mb-2">
             Password
           </label>
@@ -93,8 +98,10 @@ function RegistrationForm() {
             required
           />
         </div>
+
+        {/* Department Field */}
         <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-600 mb-2">
+          <label htmlFor="department" className="block text-gray-600 mb-2">
             Department
           </label>
           <input
@@ -104,27 +111,27 @@ function RegistrationForm() {
             value={values.department}
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter your Department"
+            placeholder="Enter your department"
             required
           />
         </div>
-        <div className="mb-4">
-  <label htmlFor="birthdate" className="block text-gray-600 mb-2">
-    Birth Date:
-  </label>
-  <input
-    type="date"
-    id="birthdate"
-    name="birthdate" // Corrected here
-    value={values.birthdate}
-    onChange={handleChange}
-    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-   
-    required
-  />
-</div>
 
-        
+        {/* Birthdate Field */}
+        <div className="mb-4">
+          <label htmlFor="birthdate" className="block text-gray-600 mb-2">
+            Birthdate
+          </label>
+          <input
+            type="date"
+            id="birthdate"
+            name="birthdate"
+            value={values.birthdate}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
         {/* Submit Button */}
         <button
           type="submit"
